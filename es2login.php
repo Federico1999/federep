@@ -9,19 +9,82 @@ if(!isset($_POST["contatore"]))
  $mb="annulla";
   $mb2="conferma";
   $divmode="inline";
+  $div2mode="none";
+  $div3mode="none";
 }
 else if($_POST["contatore"] == 1)
 {
-  
+  $div2mode="inline";
+  $div3mode="none";
   $titolo="Riepilogo dati";
   $contatore=$_POST["contatore"]+1;
   $divmode="none";
+  $rcognome=$_POST["cognome"];
+  $rnome=$_POST["nome"];
+   $remail=$_POST["mail"];
+  $rpass=$_POST["pass"];
+  if($_POST["sesso"]=="m")
+  {
+    $rsesso="maschio";
+  }
+  else if($_POST["sesso"]=="f")
+  {
+    $rsesso="femmina";
+  }
+  $rnazio=$_POST["nazio"];
+
+  if($_POST["a"]=="av" && $_POST["b"]=="bv")
+  {
+    $rpatente="A e B";
+  }
+  else
+  {
+    if($_POST["a"]=="av")
+    {
+      $rpatente="A";
+    }
+    else  if( $_POST["b"]=="bv")
+    {
+      $rpatente="B";
+    }
+    else
+    {
+     $rpatente="nessuna patente"; 
+    }
+  }
+ 
+}
+else if($_POST["contatore"] == 2)
+{
+  $contatore=$_POST["contatore"]+1;
+  $divmode="none";
+  $div2mode="none";
+  $div3mode="inline";
+  $servername="localhost";
+  $dbname="registrologin";
+  $serverloc="mysql:host=$servername;dbname=$dbname";
+  $username="root";
+  $mpass="federico";
+  $cognome=$_POST["rcognome"];
+  $nome=$_POST["rnome"];
+  $sesso=$_POST["rsesso"];
+  $nazio=$_POST["rnazio"];
+  $patente=$_POST["rpatente"];
+  $mail=$_POST["remail"];
+  $passw=$_POST["rpass"];
+  
+  $conn=new PDO($serverloc,$username,$mpass);
+  $com="INSERT INTO registrati(cognome,nome,sesso,nazionalità,patente,Email,Password) VALUES($cognome,$nome,$sesso,$nazio,$patente,$mail,$passw);";
+  $conn->exec($com);
 }
 
 ?>
+
 <style>
- div[id=id1] {display:<?php echo "$divmode"?>;}>
+ div[id=div1] {display:<?php echo "$divmode"?>;}
+ div[id=div2] {display:<?php echo "$div2mode"?>;}
 </style>
+
 <script>
 function verificadati()
   {  
@@ -66,19 +129,41 @@ function verificadati()
 
 
 <html>
-  <div id="id1">
+  <div id="div1">
   <form action="" method="post" name="formone" onsubmit="return verificadati()">    <!--probabilmente sarà necessario  effettuare-->
     <h1><?php echo $titolo ?></h1><br>
     <input type="hidden" name="contatore" value="<?php echo "$contatore"?>">
     cognome: <input type="text" name="cognome"><br>
     nome: <input type="text" name="nome"><br>
     sesso:  <input type="radio" value="m" name="sesso">maschile  <input type="radio" value="f" name="sesso">femminile <br>
-    nazionalità: <select name="nazio"><option value="vuoto"></option><option value="ita">Italiana</option> <option value="USA">Americana</option>></select><br>
+    nazionalità: <select name="nazio"><option value="ita">Italiana</option> <option value="USA">Americana</option>></select><br>
     patente:<input type="checkbox" name="a" value="av"> cat.A <input type="checkbox" name="b" value="bv">cat.B <br>
     E-mail: <input type="text" name="mail"><br>
     password: <input type="text" name="pass"><br>
     <button type="reset" name="but"><?php echo "$mb"?></button>  <button type="submit" name="butt"><?php echo "$mb2" ?></button> 
     </form> <!--potrebbe essere una buona idea creare un altro form-->
+  </div>
+  <div id="div2">
+    <form action="" method="post" name="formtwo">
+      cognome: <?php echo "$rcognome"?><br>
+      nome: <?php echo "$rnome" ?><br>
+      sesso: <?php echo "$rsesso"?><br>
+      nazionalita': <?php echo "$rnazio"?><br>
+      patente: <?php echo "$rpatente"?><br>
+      E-mail: <?php echo "$remail"?><br>
+      <input type="hidden" name="cognomei" value="<?php echo "$rcognome"?>">
+      <input type="hidden" name="nomei" value="<?php echo "$rnome"?>">
+      <input type="hidden" name="sessoi" value="<?php echo "$rsesso"?>">
+      <input type="hidden" name="nazioi" value="<?php echo "$rnazio"?>">
+      <input type="hidden" name="patentei" value="<?php echo "$rpatente"?>">
+      <input type="hidden" name="maili" value="<?php echo "$remail"?>">
+      <input type="hidden" name="passi" value="<?php echo "$rpass"?>">
+      <input type="hidden" name="contatorei" value="<?php echo "$contatore"?>">
+      <button onclick="history.back()">correggi</button> <button type="submit">registra</button>
+    </form> 
+  </div>
+  <div id="div3">
+    
   </div>
   <?php echo "$contatore"?>
 </html>
