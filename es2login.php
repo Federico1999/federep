@@ -33,25 +33,23 @@ else if($_POST["contatore"] == 1)
   }
   $rnazio=$_POST["nazio"];
 
-  if($_POST["a"]=="av" && $_POST["b"]=="bv")
+  if(isset($_POST["a"])==false && isset($_POST["b"])==false)
   {
-    $rpatente="A e B";
+    $rpatente="nessuna patente"; 
   }
-  else
-  {
-    if($_POST["a"]=="av")
+  else if(isset($_POST["a"])==true && isset($_POST["b"])==false)
+   {
+        $rpatente="A";
+   }
+    else  if(isset($_POST["a"])==false && isset($_POST["b"])==true)
     {
-      $rpatente="A";
-    }
-    else  if( $_POST["b"]=="bv")
-    {
-      $rpatente="B";
+       $rpatente="B";
     }
     else
     {
-     $rpatente="nessuna patente"; 
+      $rpatente="A e B";
     }
-  }
+  
  
 }
 else if($_POST["contatore"] == 2)
@@ -61,21 +59,75 @@ else if($_POST["contatore"] == 2)
   $div2mode="none";
   $div3mode="inline";
   $servername="localhost";
-  $dbname="registrologin";
-  $serverloc="mysql:host=$servername;dbname=$dbname";
+  $dbname="datalogin";
+   $serverloc='mysql:host=localhost;dbname=datalogin';  
   $username="root";
   $mpass="federico";
-  $cognome=$_POST["rcognome"];
-  $nome=$_POST["rnome"];
-  $sesso=$_POST["rsesso"];
-  $nazio=$_POST["rnazio"];
-  $patente=$_POST["rpatente"];
-  $mail=$_POST["remail"];
-  $passw=$_POST["rpass"];
-  
-  $conn=new PDO($serverloc,$username,$mpass);
-  $com="INSERT INTO registrati(cognome,nome,sesso,nazionalità,patente,Email,Password) VALUES($cognome,$nome,$sesso,$nazio,$patente,$mail,$passw);";
-  $conn->exec($com);
+  $cognome=$_POST["cognomei"];
+  $nome=$_POST["nomei"];
+  $sesso=$_POST["sessoi"];
+  $nazio=$_POST["nazioi"];
+  $patente=$_POST["patentei"];
+  $mail=$_POST["maili"];
+  $passw=$_POST["passi"];
+  //VALUES($cognome,$nome,$sesso,$nazio,$patente,$mail,$passw) VALUES(:cognome,:nome,:sesso,:nazio,:patente,:mail,:passw)
+   try
+  {
+   $conn=new PDO($serverloc,$username,$mpass);
+    // $com="INSERT INTO logindb(cognome,nome,sesso,nazionalità,patente,Email,Password) VALUES($cognome,$nome,$sesso,$nazio,$patente,$mail,$passw)";
+   //$com=$conn->prepare("INSERT INTO logindb(cognome,nome,sesso,nazionalità,patente,Email,Password) VALUES(':cognome',':nome',':sesso',':nazio',':patente',':mail',':passw')");  
+   $com=$conn->prepare("INSERT INTO logindb(cognome,nome,sesso,nazionalita,patente,Email,Password) VALUES(:cognome,:nome,:sesso,:nazio,:patente,:mail,:passw)");  
+   $com->bindValue(":cognome",$cognome );
+   $com->bindValue(":nome",$nome );
+   $com->bindValue(":sesso",$sesso );
+   $com->bindValue(":nazio",$nazio );
+   $com->bindValue(":patente",$patente);
+   $com->bindValue(":mail",$mail );
+     $com->bindValue(":passw",$passw);
+ $com->execute();
+/*     
+   $com->bindValue(":cognome",$cognome , PDO::PARAM_STR);
+   $com->bindValue(":nome",$nome , PDO::PARAM_STR);
+   $com->bindValue(":sesso",$sesso , PDO::PARAM_STR);
+   $com->bindValue(":nazio",$nazio , PDO::PARAM_STR);
+   $com->bindValue(":patente",$patente , PDO::PARAM_STR);
+   $com->bindValue(":mail",$mail , PDO::PARAM_STR);
+   $com->bindValue(":passw",$passw , PDO::PARAM_STR);
+*/     
+     
+     //$com=$conn->prepare("INSERT INTO logindb(cognome,nome,sesso,nazionalità,patente,Email,Password) VALUES('franchi','nome','sesso','nazio','patente','mail','passw')");  
+   
+
+/* FUNZIONA     
+    $com=$conn->prepare("INSERT INTO logindb(cognome,nome) VALUES(:cognome, :nome)");  
+    $com->bindValue(':cognome', $cognome, PDO::PARAM_STR);
+    $com->bindValue(':nome', $nome, PDO::PARAM_STR);
+    $com->execute();
+*/     
+     
+     //FUNZIONA
+     /*
+   $com=$conn->prepare("INSERT INTO logindb set cognome = :cognome , nome = :nome ");  
+    $com->bindValue(':cognome', $cognome, PDO::PARAM_STR);
+    $com->bindValue(':nome', $nome, PDO::PARAM_STR);
+   $com->execute();
+     */
+    //BABBO
+   /* Funziona
+     $stmt = $conn->prepare("INSERT INTO logindb(cognome, nome) VALUES (:cognome, :nome)");
+    $stmt->bindParam(':cognome', $cognome, PDO::PARAM_STR);
+    $stmt->bindParam(':nome', $nome, PDO::PARAM_STR);
+    $stmt->execute(); 
+     */ 
+     
+  }catch(PDOException $e)
+   {
+      echo 'Connessione fallita';
+      //$e->getMessage();
+   }
+  $conn=null;
+  //sleep(2);
+ // $conn->die();
 }
 
 ?>
@@ -83,6 +135,14 @@ else if($_POST["contatore"] == 2)
 <style>
  div[id=div1] {display:<?php echo "$divmode"?>;}
  div[id=div2] {display:<?php echo "$div2mode"?>;}
+ div[id=div3] {display:<?php echo"$div3mode"?>;}
+ .container{
+    height: 20px;
+    width:20px;
+  }
+  .ss{
+    font-size:20px;
+  }
 </style>
 
 <script>
@@ -125,6 +185,11 @@ function verificadati()
     }
                         
   }
+  function goback()
+  {
+    window.history.back();
+    return
+  }
 </script>
 
 
@@ -134,8 +199,8 @@ function verificadati()
     <h1><?php echo $titolo ?></h1><br>
     <input type="hidden" name="contatore" value="<?php echo "$contatore"?>">
     cognome: <input type="text" name="cognome"><br>
-    nome: <input type="text" name="nome"><br>
-    sesso:  <input type="radio" value="m" name="sesso">maschile  <input type="radio" value="f" name="sesso">femminile <br>
+    nome:<input type="text" name="nome"><br>
+    sesso:<input type="radio" value="m" name="sesso" class="container"><a class="ss">maschile</a> <input type="radio" value="f" name="sesso" class="container"><a class="ss">femminile</a> <br>
     nazionalità: <select name="nazio"><option value="ita">Italiana</option> <option value="USA">Americana</option>></select><br>
     patente:<input type="checkbox" name="a" value="av"> cat.A <input type="checkbox" name="b" value="bv">cat.B <br>
     E-mail: <input type="text" name="mail"><br>
@@ -158,12 +223,13 @@ function verificadati()
       <input type="hidden" name="patentei" value="<?php echo "$rpatente"?>">
       <input type="hidden" name="maili" value="<?php echo "$remail"?>">
       <input type="hidden" name="passi" value="<?php echo "$rpass"?>">
-      <input type="hidden" name="contatorei" value="<?php echo "$contatore"?>">
-      <button onclick="history.back()">correggi</button> <button type="submit">registra</button>
+      <input type="hidden" name="contatore" value="<?php echo "$contatore"?>">
+      <button type="button" onclick="goback()">correggi</button> <button type="submit" name="butt2">registra</button>        
     </form> 
   </div>
   <div id="div3">
-    
+    <h3>Dati correttamente registrati</h3><br>
+   <button type="button" onclick=document.location.href="http://federep-fedefranchi99295478.codeanyapp.com/es2login.php/">chiudi</button> 
   </div>
-  <?php echo "$contatore"?>
+  
 </html>
