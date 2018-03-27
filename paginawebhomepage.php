@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <?php 
-
-if(isset($_POST["username"]) || )//inserire verifica di controllo (per sapere se bisogna controllare nel database o se hai gia' controllato)
+//$loggato="prova";
+if(isset($_POST["username"]) && $loggato=="false")//inserire verifica di controllo (per sapere se bisogna controllare nel database o se hai gia' controllato)
 {
    $serverloc='mysql:host=localhost;dbname=datalogin';
   $username="root";
@@ -15,15 +15,21 @@ if(isset($_POST["username"]) || )//inserire verifica di controllo (per sapere se
    $com->execute();
    $row=$com->fetch();
    $nrighe=$com->rowCount(); //variabile che conterra' il numero delle righe
-    if($nrighe>0)
+    if($nrighe==1)
     {
-      $loggato="vero"
+      $loggato="vero";
     }
-    //echo $row["Username"];
-   // echo $row["Password"];
+    echo $row["Username"];
+    echo "<br>";
+    echo $row["Password"];
+    echo $loggato;
   }catch(Exception $e){echo $e;}
 }
-if(!isset($_POST["loggato"]))
+if($loggato=="vero")
+{
+  $messaggio=" questa e' la homepage vista da un utente registrato";
+}
+else if(!isset($_POST["loggato"]))
 {
   //echo "loggato=false";
   $loggato="false";
@@ -31,6 +37,11 @@ if(!isset($_POST["loggato"]))
 else
 {
   $loggato=$_POST["loggato"];
+}
+
+if($loggato!="vero")
+{
+  $messaggio="questa e' la homepage vista da un utente non registrato";
 }
 if(isset($_POST["loggarsi"])==true)
 {
@@ -45,8 +56,7 @@ if(isset($_POST["loggarsi"])==true)
  }
 }
 else if(!isset($_POST["loggarsi"]))
-{
-  
+{  
   echo "<br>loggarsi non esiste";
   $divlogtype="none";
 }
@@ -97,7 +107,7 @@ else if(!isset($_POST["loggarsi"]))
     </div>
     
     <h3>
-      questa e' la homepage vista da un utente non registrato 
+      <?php echo $messaggio?>
       
     </h3>
   </body>

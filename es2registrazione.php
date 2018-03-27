@@ -83,8 +83,8 @@ else if($_POST["contatore"] == 2)
    $com->bindValue(":nazio",$nazio );
    $com->bindValue(":patente",$patente);
    $com->bindValue(":mail",$mail );
-     $com->bindValue(":passw",$passw);
- $com->execute();
+   $com->bindValue(":passw",$passw);
+   $com->execute();
 /*     
    $com->bindValue(":cognome",$cognome , PDO::PARAM_STR);
    $com->bindValue(":nome",$nome , PDO::PARAM_STR);
@@ -187,7 +187,7 @@ function verificadati()
   function goback()
   {
     window.history.back();
-    return
+    return;
   }
 </script>
 
@@ -199,7 +199,7 @@ function verificadati()
     <input type="hidden" name="contatore" value="<?php echo "$contatore"?>">
     cognome: <input type="text" name="cognome"><br>
     nome:<input type="text" name="nome"><br>
-    sesso:<input type="radio" value="m" name="sesso" class="container"><a class="ss">maschile</a> <input type="radio" value="f" name="sesso" class="container"><a class="ss">femminile</a> <br>
+    sesso:<input type="radio" value="m" name="sesso" class="container"><a class="ss">uomo</a> <input type="radio" value="f" name="sesso" class="container"><a class="ss">donna</a> <br>
     nazionalità: <select name="nazio"><option value="ita">Italiana</option> <option value="USA">Americana</option>></select><br>
     patente:<input type="checkbox" name="a" value="av"> cat.A <input type="checkbox" name="b" value="bv">cat.B <br>
     E-mail: <input type="text" name="mail"><br>
