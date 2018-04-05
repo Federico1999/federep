@@ -1,7 +1,16 @@
 <!DOCTYPE html>
 <?php 
-//$loggato="prova";
-if(isset($_POST["username"]) && $loggato=="false")//inserire verifica di controllo (per sapere se bisogna controllare nel database o se hai gia' controllato)
+$divloggato="none";
+$divlogtype="none";
+$divlogreg="none";
+if(isset($_POST["loggato"]))
+{
+ $loggato=$_POST["loggato"];
+}
+else{
+  $loggato="false";
+}
+if(isset($_POST["Email"]) && $loggato=="false")//inserire verifica di controllo (per sapere se bisogna controllare nel database o se hai gia' controllato)
 {
    $serverloc='mysql:host=localhost;dbname=datalogin';
   $username="root";
@@ -9,8 +18,8 @@ if(isset($_POST["username"]) && $loggato=="false")//inserire verifica di control
   try
   {
    $conn=new PDO($serverloc,$username,$pass);
-   $com=$conn->prepare("SELECT Username,Password FROM logindb WHERE Username=:user AND Password=:pass");
-   $com->bindValue(":user",$_POST["username"]);
+   $com=$conn->prepare("SELECT Email,Password FROM logindb WHERE Email=:mail AND Password=:pass");
+   $com->bindValue(":mail",$_POST["Email"]);
    $com->bindValue(":pass",$_POST["pass"]);
    $com->execute();
    $row=$com->fetch();
@@ -18,60 +27,60 @@ if(isset($_POST["username"]) && $loggato=="false")//inserire verifica di control
     if($nrighe==1)
     {
       $loggato="vero";
+      $email=$row["Email"];
     }
-    echo $row["Username"];
-    echo "<br>";
+    else
+    {
+      echo "credenziali errate";
+    }
+    echo $row["Email"];
+    /*echo "<br>";
     echo $row["Password"];
-    echo $loggato;
+    echo $loggato;*/
   }catch(Exception $e){echo $e;}
-}
-if($loggato=="vero")
-{
-  $messaggio=" questa e' la homepage vista da un utente registrato";
-}
-else if(!isset($_POST["loggato"]))
-{
-  //echo "loggato=false";
-  $loggato="false";
-}
-else
-{
-  $loggato=$_POST["loggato"];
+ 
 }
 
-if($loggato!="vero")
-{
-  $messaggio="questa e' la homepage vista da un utente non registrato";
-}
 if(isset($_POST["loggarsi"])==true)
 {
-  echo "<br>loggarsi e' true";
+//  echo "<br>loggarsi e' true";
  if($_POST["loggarsi"]=="loginpremuto")
  {
    $divlogtype="inline";
  }
  else
  {
-  $divlogtype="none"; 
+  $divlogtype="none";
  }
 }
 else if(!isset($_POST["loggarsi"]))
 {  
-  echo "<br>loggarsi non esiste";
+//  echo "<br>loggarsi non esiste";
   $divlogtype="none";
 }
+
+if($loggato=="vero")
+{
+  $divloggato="inline";
+}
+else{
+  $divlogreg="inline";
+}
 ?>
+
 <style>
   div[id=divlog] {display:<?php echo $divlogtype ?>;} 
+  div[id=divloggato] {display:<?php echo $divloggato ?>;}
+  div[id=divlogreg]{display:<?php echo $divlogreg ?>;}
 </style>
 
 <script>
   function verificadati()
   {
   
-    if(document.formlogin.username.value.length<1)
+    if(document.formlogin.Email.value.length<1)
       {
-        alert("non e' stato inserito il nome utente");
+        alert("non e' stata inserita l'Email");
         return false;
       }
     else if(document.formlogin.pass.value.length<1)
@@ -79,36 +88,50 @@ else if(!isset($_POST["loggarsi"]))
         alert("non e' stata inserita la password");
         return false;
       }
-    else{
-    return true;
+  
+
+   if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(formlogin.Email.value))
+    {
+      return true;
     }
-  }
+    else
+    {
+      alert("L'indirizzo Email inserito non è valido")
+      return false;
+    }
+    return true;
+ }
 </script>
 
 <html>  
   <body>
   <h1>Homepage</h1><br>
     
- <button ><a href="http://federep-fedefranchi99295478.codeanyapp.com/es2registrazione.php/">registrati</a></button>
-      
-    <form action="" method="post" name="formpulsantelogin">
+      <div id="divlogreg">
+       <form action="" method="post" name="formpulsantelogin">
+      <button ><a href="http://federep-fedefranchi99295478.codeanyapp.com/es2registrazione.php/">registrati</a></button>
       <input type="hidden" name="loggarsi" value="loginpremuto">
       <button type="submit">login</button>
     </form>
+        </div>
     
     <div id="divlog">
     <form action="" method="post" name="formlogin"  onsubmit="return verificadati()">
-      username: <input type="text" name="username"><br>
+      Email: <input type="text" name="Email"><br>
       password: <input type="text" name="pass"><br>
-      <input type="hidden" name="loggarsi" value="<?php echo $_POST["loggarsi"] ?>">
+    <!--  <input type="hidden" name="loggarsi" value="<?php echo $_POST["loggarsi"] ?>">  -->
       
      <button onclick="goback()">annulla</button>  <button type="submit">entra</button>
     </form>   
     </div>
     
-    <h3>
-      <?php echo $messaggio?>
-      
-    </h3>
+    <div id="divloggato">
+      <form action="" method="post" name="formloggato">
+        <p>Benvenuto  <?php echo $email?></p>
+        <input type="hidden" name="loggato" value="<?php echo $loggato?>">
+        <input type="hidden" name="email" value="<?php echo $email?>">
+      </form>           
+    </div>
+ 
   </body>
 </html>
