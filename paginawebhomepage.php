@@ -1,45 +1,59 @@
 <!DOCTYPE html>
 <?php 
+session_start();
 $divloggato="none";
 $divlogtype="none";
 $divlogreg="none";
-if(isset($_POST["loggato"]))
+$divselviewcat="none";
+$serverloc='mysql:host=localhost;dbname=datalogin';
+   $username="root";
+   $pass="federico";
+$loggato;
+if(isset($_POST["pulslogout"]))
+{
+  $loggato="false";
+}
+if(isset($_POST["pulsvediprestazioni"]))
+{
+  $conn=new PDO($serverloc,$username,$pass);
+  $tab=$conn->execute("SELECT * FROM categoria");
+  $divselviewcat="inline";
+}
+if(isset($_POST["loggato"]) && $loggato!="false")
 {
  $loggato=$_POST["loggato"];
 }
 else{
   $loggato="false";
 }
-if(isset($_POST["Email"]) && $loggato=="false")//inserire verifica di controllo (per sapere se bisogna controllare nel database o se hai gia' controllato)
-{
-   $serverloc='mysql:host=localhost;dbname=datalogin';
-  $username="root";
-  $pass="federico";
-  try
-  {
-   $conn=new PDO($serverloc,$username,$pass);
-   $com=$conn->prepare("SELECT Email,Password FROM logindb WHERE Email=:mail AND Password=:pass");
-   $com->bindValue(":mail",$_POST["Email"]);
-   $com->bindValue(":pass",$_POST["pass"]);
-   $com->execute();
-   $row=$com->fetch();
-   $nrighe=$com->rowCount(); //variabile che conterra' il numero delle righe
-    if($nrighe==1)
-    {
-      $loggato="vero";
-      $email=$row["Email"];
-    }
-    else
-    {
-      echo "credenziali errate";
-    }
-    echo $row["Email"];
-    /*echo "<br>";
-    echo $row["Password"];
-    echo $loggato;*/
-  }catch(Exception $e){echo $e;}
- 
-}
+
+ if(isset($_POST["Email"]) && $loggato=="false")//inserire verifica di controllo (per sapere se bisogna controllare nel database o se hai gia' controllato)
+ {
+   
+   try
+   { 
+    $conn=new PDO($serverloc,$username,$pass);
+    $com=$conn->prepare("SELECT Email,Password FROM logindb WHERE Email=:mail AND Password=:pass");
+    $com->bindValue(":mail",$_POST["Email"]);
+    $com->bindValue(":pass",$_POST["pass"]);
+    $com->execute();
+    $row=$com->fetch();
+    $nrighe=$com->rowCount(); //variabile che conterra' il numero delle righe
+     if($nrighe==1)
+     {
+       $loggato="vero";
+       $email=$row["Email"];
+     }
+     else
+     {
+       echo "credenziali errate";
+     }
+     echo $row["Email"];
+     /*echo "<br>";
+     echo $row["Password"];
+     echo $loggato;*/
+   }catch(Exception $e){echo $e;}
+ }
 
 if(isset($_POST["loggarsi"])==true)
 {
@@ -66,12 +80,23 @@ if($loggato=="vero")
 else{
   $divlogreg="inline";
 }
+
+function tab($sceltatab)
+{
+   $serverloc='mysql:host=localhost;dbname=datalogin';
+   $pass="federico";
+   $username="root";
+  $conn=new PDO($serverloc,$username,$pass);
+  //$com=$conn->prepare;
+  
+}
 ?>
 
 <style>
   div[id=divlog] {display:<?php echo $divlogtype ?>;} 
   div[id=divloggato] {display:<?php echo $divloggato ?>;}
   div[id=divlogreg]{display:<?php echo $divlogreg ?>;}
+  div[id=divselviewcat]{display:<?php echo $divselviewcat?>;}
 </style>
 
 <script>
@@ -101,6 +126,13 @@ else{
     }
     return true;
  }
+/*  function pulsantelogout()
+  {
+    <php  $loggato="false"?>;
+    document.formloggato.loggato.value="false";
+  } */
+ 
+ 
 </script>
 
 <html>  
@@ -128,9 +160,15 @@ else{
     <div id="divloggato">
       <form action="" method="post" name="formloggato">
         <p>Benvenuto  <?php echo $email?></p>
-        <input type="hidden" name="loggato" value="<?php echo $loggato?>">
+           <input type="hidden" name="loggato" value="<?php echo $loggato?>">
+          <button type="submit" name="pulslogout">logout</button><br>
         <input type="hidden" name="email" value="<?php echo $email?>">
-      </form>           
+        <button type="submit" name="pulsinserimentocatpre">inserimento categoria e prestazione</button><br>
+        <button type="submit" name="pulsvediprestazioni">visualizza prestazioni per categoria</button><br>
+        <div id="divselviewcat">
+          <a>inserisci categpria</a> <select><?php echo "<option value=''>"?></select> riprendi da qua
+        </div>
+     </form>           
     </div>
  
   </body>
