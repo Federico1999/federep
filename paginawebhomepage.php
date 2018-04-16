@@ -4,7 +4,10 @@ session_start();
 $divloggato="none";
 $divlogtype="none";
 $divlogreg="none";
+$divsceltaopzionelog="none";
 $divselviewcat="none";
+$divselviewcate="none";
+$divinserimento="none";
 $serverloc='mysql:host=localhost;dbname=datalogin';
    $username="root";
    $pass="federico";
@@ -15,9 +18,14 @@ if(isset($_POST["pulslogout"]))
 }
 if(isset($_POST["pulsvediprestazioni"]))
 {
+  $divsceltaopzionelog="inline";
   $conn=new PDO($serverloc,$username,$pass);
   $tab=$conn->execute("SELECT * FROM categoria");
   $divselviewcat="inline";
+}
+else if(isset($_POST["pulsinserimentocatpre"]))
+{
+  $divinserimento="inline";
 }
 if(isset($_POST["loggato"]) && $loggato!="false")
 {
@@ -97,6 +105,9 @@ function tab($sceltatab)
   div[id=divloggato] {display:<?php echo $divloggato ?>;}
   div[id=divlogreg]{display:<?php echo $divlogreg ?>;}
   div[id=divselviewcat]{display:<?php echo $divselviewcat?>;}
+  div[id=divsceltaopzionelog]{display:<?php echo $divsceltaopzionelog?>;}
+  div[id=divselviewcate]{display:<?php echo $divselviewcate?>;}
+  div[id=divinserimento]{display:<?php echo $divinserimento?>;}
 </style>
 
 <script>
@@ -158,6 +169,7 @@ function tab($sceltatab)
     </div>
     
     <div id="divloggato">
+      <div id="divsceltaopzionelog">
       <form action="" method="post" name="formloggato">
         <p>Benvenuto  <?php echo $email?></p>
            <input type="hidden" name="loggato" value="<?php echo $loggato?>">
@@ -165,10 +177,18 @@ function tab($sceltatab)
         <input type="hidden" name="email" value="<?php echo $email?>">
         <button type="submit" name="pulsinserimentocatpre">inserimento categoria e prestazione</button><br>
         <button type="submit" name="pulsvediprestazioni">visualizza prestazioni per categoria</button><br>
-        <div id="divselviewcat">
-          <a>inserisci categpria</a> <select><?php echo "<option value=''>"?></select> riprendi da qua
+     </form>   
+      </div>
+      <div id="divselviewcate">
+        <select name="scelta">
+         <?php foreach($tab as $riga)
+{echo "<option value=\""$row["idcategoria"]>"\""} riprendere da qui
+        ?> 
+                </select>
         </div>
-     </form>           
+      <div id="divinserimento">
+        
+      </div>
     </div>
  
   </body>
