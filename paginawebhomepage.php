@@ -11,21 +11,26 @@ $divinserimento="none";
 $serverloc='mysql:host=localhost;dbname=datalogin';
    $username="root";
    $pass="federico";
-$loggato;
+$loggato="";
 if(isset($_POST["pulslogout"]))
 {
+  echo "logout";
   $loggato="false";
 }
 if(isset($_POST["pulsvediprestazioni"]))
 {
-  $divsceltaopzionelog="inline";
+  //$divsceltaopzionelog="inline";
+  $divselviewcate="inline";
   $conn=new PDO($serverloc,$username,$pass);
-  $tab=$conn->execute("SELECT * FROM categoria");
+  $tab=$conn->query("SELECT * FROM categoria");
   $divselviewcat="inline";
 }
 else if(isset($_POST["pulsinserimentocatpre"]))
 {
   $divinserimento="inline";
+}
+else{
+  $divsceltaopzionelog="inline";
 }
 if(isset($_POST["loggato"]) && $loggato!="false")
 {
@@ -179,13 +184,19 @@ function tab($sceltatab)
         <button type="submit" name="pulsvediprestazioni">visualizza prestazioni per categoria</button><br>
      </form>   
       </div>
+      
       <div id="divselviewcate">
         <select name="scelta">
-         <?php foreach($tab as $riga)
-{echo "<option value=\""$row["idcategoria"]>"\""} riprendere da qui
-        ?> 
-                </select>
+ <?php
+  foreach($tab as $riga)
+{//echo "<option value=\""+$riga["idcategoria"]>">"+$riga["nomecategoria"]+"</option>";    //"<option value=\"$riga[\"idcategoria\"]>\">$riga[\"nomecategoria\"]</option>";
+  echo "ciao" +$riga["nomecategoria"];
+  } 
+   
+?> 
+         </select>
         </div>
+      
       <div id="divinserimento">
         
       </div>
