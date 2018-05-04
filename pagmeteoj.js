@@ -1,4 +1,5 @@
 //alert("ciao");
+var vettoredati;
 function gettempbycity(city)
 {
   var urlcit="http://api.openweathermap.org/data/2.5/weather?q="+city+"&APPID=4af89dd6ce566691af4c7f4ed65ec3c5&units=metric";
@@ -24,33 +25,55 @@ function gettempbycity(city)
   });
   
 }
-function gettempbycityforecast(city)
+function gettempbycityforecast(city,vettoredati)
 {
   //alert(city);
+   $("#combotime").empty();
   var urlcit="http://api.openweathermap.org/data/2.5/forecast?q="+city+"&APPID=4af89dd6ce566691af4c7f4ed65ec3c5&units=metric";
+  $("#tab2").empty();
   $.getJSON(urlcit,function(resultt)
    {
     //alert(result);
+    vettoredati=null;
+  
     if(resultt)
       {
-        //alert("informazioni ricevute");
-        var combotime=$('<select id="combo"></select>');
+        vettoredati="[";
+        //combotime=$('<select id="combo"></select>');
+        alert("")
         $.each(resultt.list,function(k,v){
           //alert(v.dt_txt);
-          combotime.append($('<option value="'+k+'">'+v['dt_txt']+'</option>'));
+          vettoredati+=v.main.temp+",";
+          $("#combotime").append($('<option value="'+k+'">'+v.dt_txt+'</option>'));
+          $("#combotime").css("display","inline");
+          //$("#combotime").clear();
         });
-        $("#tab2").append(combotime);
-      }
+          alert("sono uscito dalla con")
+          //$("#tab2").append(combotime);
+      } else{
+      alert("sono qui");
+      $("#combotime").css("display","none");
+    }
+  
     
   });
 }
+function selectionchange(vettoredati)
+{
+  alert("selection changed");
+}
+
 $(document).ready(function(){
 
   $("#okbutt").click(function(){
   gettempbycity($("#nomecitt").val())
   });
-   $("#okbuttt").click(function(){
-  gettempbycityforecast($("#nomecittt").val())
+   $("#okbuttt").click(function(vettoredati){
+  gettempbycityforecast($("#nomecittt").val(),vettoredati)
+  });
+ 
+  $("#combotime").change(function(vettoredati){
+    selectionchange(vettoredati);
   });
 });
 //function funzselezionecitt()
