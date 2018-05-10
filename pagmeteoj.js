@@ -25,55 +25,63 @@ function gettempbycity(city)
   });
   
 }
-function gettempbycityforecast(city,vettoredati)
+function gettempbycityforecast(city)
 {
   //alert(city);
+  vettoredati=[];
    $("#combotime").empty();
   var urlcit="http://api.openweathermap.org/data/2.5/forecast?q="+city+"&APPID=4af89dd6ce566691af4c7f4ed65ec3c5&units=metric";
   $("#tab2").empty();
   $.getJSON(urlcit,function(resultt)
    {
     //alert(result);
-    vettoredati=null;
-  
+    
+   $("#combotime").css("display","none");
     if(resultt)
       {
-        vettoredati="[";
+        
+        //alert("ricevuto roba");
         //combotime=$('<select id="combo"></select>');
-        alert("")
         $.each(resultt.list,function(k,v){
           //alert(v.dt_txt);
-          vettoredati+=v.main.temp+",";
+          vettoredati.push(v);
+
+          
           $("#combotime").append($('<option value="'+k+'">'+v.dt_txt+'</option>'));
-          $("#combotime").css("display","inline");
+          
           //$("#combotime").clear();
         });
-          alert("sono uscito dalla con")
-          //$("#tab2").append(combotime);
-      } else{
-      alert("sono qui");
-      $("#combotime").css("display","none");
-    }
+        $("#combotime").css("display","inline");
+        
+        //alert(vettoredati[0].main.temp);
+        //$("#tab2").append(combotime);
+      }
   
     
   });
+ 
 }
-function selectionchange(vettoredati)
+function selectionchange()
 {
-  alert("selection changed");
+  //alert("selection changed");
+  var indice=$("#combotime").val();
+  var tabt="<table class='tab2'><tr><td>main</td><td>"+vettoredati[indice].weather[0].main+"</td></tr><tr><td>description</td><td>"+vettoredati[indice].weather[0].description+"</td></tr><tr><td>temp</td><td>"+vettoredati[indice].main.temp+"</td></tr><tr><td>pressure</td><td>"+vettoredati[indice].main.pressure+"</td></tr><tr><td>humidity</td><td>"+vettoredati[indice].main.humidity+"</td></tr><tr><td>wind speed</td><td>"+vettoredati[indice].wind.speed+"</td></tr><tr><td>wind deg</td><td>"+vettoredati[indice].wind.deg+"</td></tr> </table>";
+  $("#tab2").empty();
+  $("#tab2").append(tabt);
 }
 
 $(document).ready(function(){
 
   $("#okbutt").click(function(){
-  gettempbycity($("#nomecitt").val())
+  gettempbycity($("#nomecitt").val());
   });
-   $("#okbuttt").click(function(vettoredati){
-  gettempbycityforecast($("#nomecittt").val(),vettoredati)
+   $("#okbuttt").click(function(){
+   gettempbycityforecast($("#nomecittt").val());
+     $("#combotime").val(0);
   });
  
-  $("#combotime").change(function(vettoredati){
-    selectionchange(vettoredati);
+  $("#combotime").change(function(){
+    selectionchange();
   });
 });
 //function funzselezionecitt()

@@ -7,9 +7,10 @@ $com->execute();
 $row=$com->fetch();
 $nrow=$com->rowcount();
 $rowt=$com->fetch();*/
-foreach(($tab=$conn->query("SELECT * FROM logindb")) as $riga)
+$tab=$conn->query("SELECT * FROM logindb");
+foreach($tab as $riga)
 {
-  echo $riga["Username"]; echo "<br>";
+  echo "ciao".$riga["nome"]; echo "<br>";
   echo $riga["Email"]; echo "<br>";
 }
 echo $tab->rowcount();
