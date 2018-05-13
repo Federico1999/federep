@@ -1,11 +1,13 @@
 //alert("ciao");
 var vettoredati;
+ var weekday = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+  const monthnames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+var infot;
 function gettempbycity(city)
 {
   var urlcit="http://api.openweathermap.org/data/2.5/weather?q="+city+"&APPID=4af89dd6ce566691af4c7f4ed65ec3c5&units=metric";
-  var weekday = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
-  const monthnames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+ 
   $.getJSON(urlcit,function(result){
    if(result!=null)
    {
@@ -42,6 +44,8 @@ function gettempbycityforecast(city)
         
         //alert("ricevuto roba");
         //combotime=$('<select id="combo"></select>');
+        //infot=resultt.name+","+resultt.country+"(lon="+resultt.coord.lon+", lat="+resultt.coord.lat+")"; 
+        //alert(infot);
         $.each(resultt.list,function(k,v){
           //alert(v.dt_txt);
           vettoredati.push(v);
@@ -51,8 +55,9 @@ function gettempbycityforecast(city)
           
           //$("#combotime").clear();
         });
-        $("#combotime").css("display","inline");
         
+        $("#combotime").css("display","inline");
+        selectionchange();
         //alert(vettoredati[0].main.temp);
         //$("#tab2").append(combotime);
       }
@@ -65,8 +70,9 @@ function selectionchange()
 {
   //alert("selection changed");
   var indice=$("#combotime").val();
-  var tabt="<table class='tab2'><tr><td>main</td><td>"+vettoredati[indice].weather[0].main+"</td></tr><tr><td>description</td><td>"+vettoredati[indice].weather[0].description+"</td></tr><tr><td>temp</td><td>"+vettoredati[indice].main.temp+"</td></tr><tr><td>pressure</td><td>"+vettoredati[indice].main.pressure+"</td></tr><tr><td>humidity</td><td>"+vettoredati[indice].main.humidity+"</td></tr><tr><td>wind speed</td><td>"+vettoredati[indice].wind.speed+"</td></tr><tr><td>wind deg</td><td>"+vettoredati[indice].wind.deg+"</td></tr> </table>";
+  var tabt="<table class='tab2'><tr><td>main</td><td>"+vettoredati[indice].weather[0].main+"</td></tr><tr><td>description</td><td>"+vettoredati[indice].weather[0].description+"</td></tr><tr><td>temp</td><td>"+vettoredati[indice].main.temp+"&deg;C</td></tr><tr><td>pressure</td><td>"+vettoredati[indice].main.pressure+"hpa</td></tr><tr><td>humidity</td><td>"+vettoredati[indice].main.humidity+"%</td></tr><tr><td>wind speed</td><td>"+vettoredati[indice].wind.speed+"m/s</td></tr><tr><td>wind deg</td><td>"+vettoredati[indice].wind.deg+"</td></tr> </table>";
   $("#tab2").empty();
+  //$("#hh").append(infot);
   $("#tab2").append(tabt);
 }
 
@@ -77,7 +83,7 @@ $(document).ready(function(){
   });
    $("#okbuttt").click(function(){
    gettempbycityforecast($("#nomecittt").val());
-     $("#combotime").val(0);
+     //$("#combotime").val(0);
   });
  
   $("#combotime").change(function(){
