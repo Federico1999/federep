@@ -16,8 +16,8 @@ function gettempbycity(city)
     var month=monthnames[dt.getMonth()];
     var time = dt.getHours() + ":" + dt.getMinutes() + ":" + dt.getSeconds();
     var info=$('<a class="info">'+day+' '+month+' '+dt.getDate()+' '+dt.getFullYear()+' '+time+' GMT'+dt.getTimezoneOffset()+'</a>');
-    var table=$('<table class="table"><tbody></tbody></table>');
-     var righe=$('<tr><td><h4>'+result.name+','+result.sys.country+'(lon='+result.coord.lon+', lat='+result.coord.lat+')</h4></td></tr><tr><td>main</td><td>'+result.weather[0].main+'</td></tr> <tr><td>description</td><td>'+result.weather[0].description+'</td></tr> <tr><td>temperature</td><td>'+result.main.temp+'&deg;C</td></tr> <tr><td>pressure</td><td>'+result.main.pressure+'hpa</td></tr> <tr><td>humidity</td><td>'+result.main.humidity+'%</td></tr> <tr><td>wind speed</td><td>'+result.wind.speed+'m/s</td></tr> <tr><td>wind deg</td><td>'+result.wind.deg+'</td></tr> <tr><td>visibility</td><td>'+result.visibility+'</td></tr>');
+    var table=$('<table class="tabl"><tbody></tbody></table>');
+     var righe=$('<tr><td><h4>'+result.name+','+result.sys.country+'(lon='+result.coord.lon+', lat='+result.coord.lat+')</h4></td></tr><thead class="thead-dark"><tr><td>main</td><td>'+result.weather[0].main+'</td></tr></thead> <tr><td>description</td><td>'+result.weather[0].description+'</td></tr> <tr><td>temperature</td><td>'+result.main.temp+'&deg;C</td></tr> <tr><td>pressure</td><td>'+result.main.pressure+'hpa</td></tr> <tr><td>humidity</td><td>'+result.main.humidity+'%</td></tr> <tr><td>wind speed</td><td>'+result.wind.speed+'m/s</td></tr> <tr><td>wind deg</td><td>'+result.wind.deg+'</td></tr> <tr><td>visibility</td><td>'+result.visibility+'</td></tr>');
    
          $("#tab1").empty();
          $("#tab1").append(info);
@@ -39,12 +39,14 @@ function gettempbycityforecast(city)
     //alert(result);
     
    $("#combotime").css("display","none");
+     
     if(resultt)
       {
         
-        //alert("ricevuto roba");
+       //alert("ricevuto roba");
         //combotime=$('<select id="combo"></select>');
-        //infot=resultt.name+","+resultt.country+"(lon="+resultt.coord.lon+", lat="+resultt.coord.lat+")"; 
+        infot=resultt.city.name+","+resultt.city.country+"(lon="+resultt.city.coord.lon+", lat="+resultt.city.coord.lat+")"; 
+        //alert(resultt.city.name)
         //alert(infot);
         $.each(resultt.list,function(k,v){
           //alert(v.dt_txt);
@@ -55,7 +57,6 @@ function gettempbycityforecast(city)
           
           //$("#combotime").clear();
         });
-        
         $("#combotime").css("display","inline");
         selectionchange();
         //alert(vettoredati[0].main.temp);
@@ -70,9 +71,10 @@ function selectionchange()
 {
   //alert("selection changed");
   var indice=$("#combotime").val();
-  var tabt="<table class='tab2'><tr><td>main</td><td>"+vettoredati[indice].weather[0].main+"</td></tr><tr><td>description</td><td>"+vettoredati[indice].weather[0].description+"</td></tr><tr><td>temp</td><td>"+vettoredati[indice].main.temp+"&deg;C</td></tr><tr><td>pressure</td><td>"+vettoredati[indice].main.pressure+"hpa</td></tr><tr><td>humidity</td><td>"+vettoredati[indice].main.humidity+"%</td></tr><tr><td>wind speed</td><td>"+vettoredati[indice].wind.speed+"m/s</td></tr><tr><td>wind deg</td><td>"+vettoredati[indice].wind.deg+"</td></tr> </table>";
+  var tabt=$('<table class="tab"><tr><td>main</td><td>'+vettoredati[indice].weather[0].main+'</td></tr><tr><td>description</td><td>'+vettoredati[indice].weather[0].description+'</td></tr><tr><td>temp</td><td>'+vettoredati[indice].main.temp+'&deg;C</td></tr><tr><td>pressure</td><td>'+vettoredati[indice].main.pressure+'hpa</td></tr><tr><td>humidity</td><td>'+vettoredati[indice].main.humidity+'%</td></tr><tr><td>wind speed</td> <td>'+vettoredati[indice].wind.speed+'m/s</td></tr><tr><td>wind deg</td><td>'+vettoredati[indice].wind.deg+'</td></tr> </table>');
   $("#tab2").empty();
-  //$("#hh").append(infot);
+  $("#hh").empty();
+  $("#hh").append(infot);
   $("#tab2").append(tabt);
 }
 
