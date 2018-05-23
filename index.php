@@ -11,6 +11,6 @@
     - <a href="paginawebhomepage.php">homepage</a><br><br>
     - <a href="provaselect.php">provaselect</a><br><br>
     - <a href="pagmeteo.html">pagina meteo</a><br><br>
-    -<a href="condominio/model.php">condominio</a>
+    -<a href="condominio/pag.html">condominio</a>
   </body>
 </html>
